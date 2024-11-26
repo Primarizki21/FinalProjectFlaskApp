@@ -1,1 +1,2 @@
 static/vit_trained_wheel.pth filter=lfs diff=lfs merge=lfs -text
+app/static/vit_trained_wheel.pth filter=lfs diff=lfs merge=lfs -text

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, Blueprint
 from PIL import Image
 import io
 import torch
@@ -13,7 +13,7 @@ app_routes = Blueprint('app_routes', __name__)
 resize_dim = (224, 224)
 threshold = 100
 # model_trained = "static/vit_trained_wheel.pth"
-model_trained = os.path.join(app.root_path, 'static', 'vit_trained_wheel.pth')
+model_trained = os.path.join(app_routes.root_path, 'static', 'vit_trained_wheel.pth')
 class_names = ["full_tire", "flat_tire", "no_tire"]
 
 # load Model
@@ -108,8 +108,3 @@ def predict():
 @app_routes.route("/")
 def home():
     return '<h1>THIS API WORKS!!!!</h1>'
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-
-    

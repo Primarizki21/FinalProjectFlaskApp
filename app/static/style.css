@@ -1,0 +1,238 @@
+/* General Reset */
+html, body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: whitesmoke;
+    text-align: center;
+    background-image: url('ban5.png'); /* Ganti 'gambar_ban.jpg' dengan nama file gambar Anda */
+    background-size: cover;
+    background-position: center;
+}
+
+/* Container Styling */
+.container {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Header Styling */
+.header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0 0 10px 10px;
+}
+
+.location {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: 10px;
+}
+
+.upload-container {
+    margin-right: 10px;
+}
+
+.upload-container a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.upload-btn {
+    background-color: #fff;
+    color: #007bff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Title */
+.title {
+    font-size: 75px;
+    font-weight: bold;
+    margin: 20px 0;
+    color: #007bff;
+}
+
+
+
+/* Image Section */
+.images {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 0;
+}
+
+.image-item {
+    text-align: center;
+    margin: 0 10px;
+}
+
+.image-item img {
+    width: 90px;
+    height: 90px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.tagline {
+    font-size: 14px;
+    color: #555;
+    margin: 15px 0;
+    font-style: italic;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    background-color: #007bff;
+    border-radius: 10px 10px 0 0;
+}
+
+.footer a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.footer button {
+    background-color: #fff;
+    color: #007bff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    flex: 1;
+    margin: 0 5px;
+}
+
+.footer button:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 375px) {
+    .header .upload-btn {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+    
+    .images {
+        flex-direction: row;
+    }
+    
+    .image-item img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .footer button {
+        font-size: 12px;
+        padding: 8px 10px;
+    }
+}
+
+/* Upload HTML */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+.square {
+    width: 300px;
+    height: 300px;
+    margin: 20px auto;
+    border: 2px solid white;
+    background-color: #f3f3f3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.square img {
+    max-width: 100%;
+    max-height: 100%;
+}
+/* .result-container {
+    margin-top: 20px;
+    color: black;
+} */
+
+.result-container {
+    display: grid;
+    grid-template-rows: auto auto auto auto;
+    justify-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.btn-container button {
+    margin: 10px;
+    padding: 10px 20px;
+}
+
+/* Probabilitas Model */
+.circle-progress {
+    width: 120px; /* Ukuran lingkaran */
+    height: 120px;
+    border-radius: 50%; /* Bentuk lingkaran */
+    background: conic-gradient(
+        red 0%,                 /* Mulai dengan merah */
+        yellow calc(50% * 1%),  /* Gradasi ke kuning */
+        green calc(var(--progress) * 1%), /* Menuju hijau hingga persentase */
+        #e6e6e6 calc(var(--progress) * 1%) /* Sisa abu-abu */
+    );
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.circle-inner {
+    width: 90px; /* Lingkaran dalam */
+    height: 90px;
+    background-color: white; /* Latar belakang tengah lingkaran */
+    border-radius: 50%; /* Tetap berbentuk lingkaran */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px; /* Ukuran teks */
+    color: black; /* Warna teks di tengah */
+}
+
+.feedback {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.feedback i {
+    font-size: 18px;
+}
+
+.feedback.good {
+    color: green;
+}
+
+.feedback.bad {
+    color: red;
+}

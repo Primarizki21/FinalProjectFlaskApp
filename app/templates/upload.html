@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechMon</title>
+    <link rel="stylesheet" href="static/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="location">
+                📍 Mulyorejo, Surabaya
+            </div>
+        </div>
+
+        <div class="square" id="imageContainer">
+            <p>No image uploaded</p>
+        </div>
+
+        <div class="btn-container">
+            <input type="file" id="imageFile" accept="image/*" style="display: none;" onchange="previewImage()">
+            <button onclick="document.getElementById('imageFile').click()">Upload Image</button>
+            <button onclick="startPrediction()">Start Predict</button>
+        </div>
+        
+        <div class="result-container" id="result">
+            <p><strong>Result akan ditampilkan di sini</strong></p>
+        </div>
+        
+
+        <div class="footer">
+            <button>History</button>
+            <button><a href="/">Home</a></button>
+            <button>Feedback</button>
+        </div>
+    </div>
+
+    <script>
+        let uploadedImage = null;
+
+        function previewImage() {
+            const fileInput = document.getElementById('imageFile');
+            const imageContainer = document.getElementById('imageContainer');
+            const file = fileInput.files[0];
+            uploadedImage = file;
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imageContainer.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imageContainer.innerHTML = '<p>No image uploaded</p>';
+            }
+        }
+
+
+        function startPrediction() {
+            const resultContainer = document.getElementById("result");
+
+            if (!uploadedImage) {
+                alert("Please upload an image first.");
+                return;
+            }
+
+            resultContainer.innerHTML = "<p><strong>Tunggu sebentar yaa...</strong></p>";
+
+            const formData = new FormData();
+            formData.append("image", uploadedImage);
+
+            axios.post('http://127.0.0.1:5000/predict', formData)
+                .then(response => {
+                    const data = response.data;
+                    const predictedClass = data.predicted_class;
+                    const maxProbability = Math.max(...data.probabilities);
+                    const variance = data.variance;
+
+                    const percentage = (maxProbability * 100).toFixed(2); // Hitung persentase
+
+                    let feedbackText = "";
+                    let feedbackClass = "";
+                    let icon = "";
+
+                    if (predictedClass === "full_tire") {
+                        feedbackText = "Ban dalam kondisi baik. Tidak perlu tindakan.";
+                        feedbackClass = "good";
+                        icon = '<i class="fa fa-check-circle"></i>';
+                    } else if (predictedClass === "flat_tire") {
+                        feedbackText = "Ban kempes. Segera isi angin.";
+                        feedbackClass = "bad";
+                        icon = '<i class="fa fa-times-circle"></i>';
+                    } else {
+                        feedbackText = "Kondisi ban tidak terdeteksi dengan jelas.";
+                        feedbackClass = "bad";
+                        icon = '<i class="fa fa-exclamation-circle"></i>';
+                    }
+
+                    resultContainer.innerHTML = `
+                        <p><strong>Prediksi:</strong> ${predictedClass}</p>
+                        <p><strong>Kepercayaan Model:</strong></p>
+                        <div class="circle-progress">
+                            <div class="circle-inner">${percentage}%</div>
+                        </div>
+                        <p><strong>Skor Blur:</strong> ${variance.toFixed(2)}</p>
+                        <p>Semakin tinggi skor blurnya, semakin tajam gambarnya.</p>
+                        <p class="feedback ${feedbackClass}">${icon} ${feedbackText}</p>
+                    `;
+
+                    updateProgress(percentage);
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    resultContainer.innerHTML = "<p><strong>Error processing the image. Please try again.</strong></p>";
+                });
+        }
+
+        function updateProgress(value) {
+            const circle = document.querySelector(".circle-progress");
+
+            const percentage = Math.min(Math.max(value, 0), 100); // Pastikan persentase valid (0-100)
+
+            circle.style.background = `conic-gradient(
+                red 0%,
+                yellow ${percentage / 2}%, 
+                green ${percentage}%, 
+                #e6e6e6 ${percentage}%
+            )`;
+        }
+
+    </script>    
+</body>
+</html>

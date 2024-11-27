@@ -99,6 +99,19 @@ def predict():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app_routes.route("/")
-def home():
-    return render_template("index.html")
+@app_routes.route('/')
+def index():
+    return render_template('index.html')
+
+@app_routes.route('/upload')
+def upload():
+    return render_template('upload.html')
+
+@app_routes.route('/hasilanalisis')
+def hasilanalisis():
+    return render_template('hasilanalisis.html')
+
+@app_routes.route('/tes')
+def tesaja():
+    return render_template('tesupload.html')
+

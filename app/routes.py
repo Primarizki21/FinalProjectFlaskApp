@@ -28,22 +28,16 @@ def load_model(model_trained):
 
 # Blur Detection
 def is_blurry(image_path, threshold, resize_dim):
-    # # Read the image
     # image = cv2.imread(image_path)
-    # if image is None:
     #     raise FileNotFoundError(f"Image at path '{image_path}' not found.")
     
-    # Convert to grayscale
     resized = cv2.resize(image_path, resize_dim)
     gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
     
-    # Apply the Laplacian operator to detect edges
     laplacian = cv2.Laplacian(gray, cv2.CV_64F)
     
-    # Calculate the variance of the Laplacian
     variance = laplacian.var()
     
-    # Determine if the image is blurry
     return variance, variance < threshold
 
 def preprocess_image(image_input, resize_dim):
@@ -107,4 +101,4 @@ def predict():
 
 @app_routes.route("/")
 def home():
-    return '<h1>THIS API WORKS!!!!</h1>'
+    return render_template("index.html")

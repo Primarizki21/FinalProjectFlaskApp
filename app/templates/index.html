@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechMon</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -13,8 +14,8 @@
                 📍 Mulyorejo, Surabaya
             </div>
             <div class="upload-container">
-                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Upload Photo/File</button>
-                <input type="file" id="fileInput" style="display: none;" onchange="uploadFile()">
+                <button class="upload-btn"><a href="/upload">Upload Photo/File</a></button>
+                <!-- <input type="file" id="fileInput" style="display: none;" onchange="uploadFile()"> -->
             </div>
         </div>
  
@@ -34,80 +35,16 @@
             </div>
         </div>
         
-        <!-- Tagline -->
         <div class="tagline">
             Quick tire check in a crisis
         </div>
         
-        <!-- Footer -->
         <div class="footer">
             <button>History</button>
-            <button>Home</button>
+            <button><a href="/">Home</a></button>
             <button>Feedback</button>
         </div>
     </div>
 
-    <script>
-        function uploadImage() {
-            const formData = new FormData();
-            const imageFile = document.getElementById('imageFile').files[0];
-            
-            if (!imageFile) {
-                alert("Please select an image.");
-                return;
-            }
-
-            formData.append("image", imageFile);
-
-            fetch('http://localhost:4040/api/tunnels')
-                .then(response => response.json())
-                .then(data => {
-                    const ngrokUrl = data.tunnels[0].public_url;
-                    const imageUploadUrl = `${ngrokUrl}/predict`; 
-
-                    fetch(imageUploadUrl, {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById("result").innerText = JSON.stringify(data, null, 2);
-
-                        alert("Berhasil! Gambar telah diproses.");
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                        document.getElementById("result").innerText = "Error uploading image.";
-                    });
-                })
-                .catch(error => {
-                    console.error("Error fetching Ngrok URL:", error);
-                    document.getElementById("result").innerText = "Error connecting to Ngrok.";
-                });
-
-            // if (imageFile) {
-            //     formData.append("image", imageFile);
-    
-            //     fetch("https://13b9-118-137-49-84.ngrok-free.app/predict", {
-            //         method: "POST",
-            //         body: formData
-            //     })
-            //     .then(response => response.json())
-            //     .then(data => {
-            //         // Menampilkan hasil prediksi di halaman
-            //         document.getElementById("result").innerText = JSON.stringify(data, null, 2);
-    
-            //         // Menampilkan alert jika upload berhasil
-            //         alert("Berhasil! Gambar telah diproses.");
-            //     })
-            //     .catch(error => {
-            //         console.error("Error:", error);
-            //         document.getElementById("result").innerText = "Error uploading image.";
-            //     });
-            // } else {
-            //     alert("Please select an image.");
-            // }
-        }
-    </script>    
 </body>
 </html>

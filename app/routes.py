@@ -3,6 +3,9 @@ from PIL import Image
 import io
 import torch
 import os
+import json
+import os
+from datetime import datetime
 import numpy as np
 from transformers import ViTFeatureExtractor, ViTForImageClassification
 from flask_cors import CORS
@@ -15,6 +18,9 @@ threshold = 100
 # model_trained = "static/vit_trained_wheel.pth"
 model_trained = os.path.join(app_routes.root_path, 'static', 'vit_trained_wheel.pth')
 class_names = ["full_tire", "flat_tire", "no_tire"]
+HISTORY_FILE = os.path.join(app_routes.root_path, 'static','history.json')
+# UPLOAD_FOLDER = os.path.join(app_routes.root_path, 'static', 'uploads')
+# os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # load Model
 def load_model(model_trained):
@@ -60,6 +66,19 @@ def predict_image(saved_model, image_input, class_names, resize_dim):
     predicted_class_name = class_names[predicted_class_idx] if class_names else str(predicted_class_idx)
     return predicted_class_name, probabilities.squeeze().tolist()
 
+# Load History
+def load_history():
+    if os.path.exists(HISTORY_FILE):
+        with open(HISTORY_FILE, 'r') as f:
+            return json.load(f)
+    else:
+        return []
+
+# Save history
+def save_history(history_data):
+    with open(HISTORY_FILE, 'w') as f:
+        json.dump(history_data, f)
+
 @app_routes.route('/predict', methods=['POST'])
 def predict():
     if 'image' not in request.files:
@@ -84,10 +103,20 @@ def predict():
         if is_blurry_image:
             return jsonify({"error": "Image is blurry", "variance": variance}), 400
         else:
-            # inputs = preprocess_image(image_cv, resize_dim)
-
             image_preprocessed = preprocess_image(file.stream, resize_dim)
             predicted_class_name, probabilities = predict_image(model_trained, image_preprocessed, class_names, resize_dim)
+
+            history_data = load_history()
+
+            hasil_prediction = {
+                "image_path": file.filename,
+                "predicted_class": predicted_class_name,
+                "probabilities": f"{round(max(probabilities) * 100, 2)}%",
+                "variance": round(variance, 2),
+                "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+            history_data.append(hasil_prediction)
+            save_history(history_data)
 
             response = {
                 "predicted_class": predicted_class_name,
@@ -110,6 +139,13 @@ def upload():
 @app_routes.route('/hasilanalisis')
 def hasilanalisis():
     return render_template('hasilanalisis.html')
+
+@app_routes.route('/history')
+def history():
+    history_data = load_history()
+    hasil_terbaru = history_data[:3]
+    hidden_count = len(history_data) - len(hasil_terbaru)
+    return render_template('history.html', history=hasil_terbaru, hidden_count=hidden_count)
 
 @app_routes.route('/tes')
 def tesaja():

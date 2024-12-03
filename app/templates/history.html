@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="location">
+                📍 Mulyorejo, Surabaya
+            </div>
+        </div>
+
+        <div class="prediction-title">
+        <h2>Prediction History</h2>
+        </div>
+
+        <div class="prediction-table">
+        <table border = "1">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Prediction</th>
+                    <th>Variance</th>
+                    <th>Probabilities</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if history %}
+                    {% for entry in history %}
+                    <tr>
+                        <td>{{ entry.timestamp }}</td>
+                        <td>{{ entry.predicted_class }}</td>
+                        <td>{{ entry.variance }}</td>
+                        <td>{{ entry.probabilities }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5">No history available.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        {% if hidden_count > 0 %}
+        <p>Ada {{ hidden_count }} hasil yang disembunyikan...</p>
+        {% endif %}
+        </div>
+        
+
+        <div class="footer">
+            <button><a href="/history">History</a></button>
+            <button><a href="/">Home</a></button>
+            <button>Feedback</button>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -4,11 +4,9 @@ import io
 import torch
 import os
 import json
-import os
 from datetime import datetime
 import numpy as np
 from transformers import ViTFeatureExtractor, ViTForImageClassification
-from flask_cors import CORS
 import cv2
 
 app_routes = Blueprint('app_routes', __name__)
@@ -143,7 +141,7 @@ def hasilanalisis():
 @app_routes.route('/history')
 def history():
     history_data = load_history()
-    hasil_terbaru = history_data[:3]
+    hasil_terbaru = history_data[-3:][::-1]
     hidden_count = len(history_data) - len(hasil_terbaru)
     return render_template('history.html', history=hasil_terbaru, hidden_count=hidden_count)
 

@@ -12,6 +12,9 @@
             <div class="location">
                 📍 Mulyorejo, Surabaya
             </div>
+            <div class="upload-container">
+                <button class="upload-btn"><a href="/upload">Upload Photo/File</a></button>
+            </div>
         </div>
 
         <div class="prediction-title">
@@ -23,9 +26,9 @@
             <thead>
                 <tr>
                     <th>Timestamp</th>
-                    <th>Prediction</th>
-                    <th>Variance</th>
-                    <th>Probabilities</th>
+                    <th>Hasil Prediksi</th>
+                    <th>Skor Blur</th>
+                    <th>Probabilitas</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,7 +43,7 @@
                     {% endfor %}
                 {% else %}
                     <tr>
-                        <td colspan="5">No history available.</td>
+                        <td colspan="5">Belum ada hasil prediksi...</td>
                     </tr>
                 {% endif %}
             </tbody>

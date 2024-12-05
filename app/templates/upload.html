@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="static/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -39,6 +40,77 @@
 
     <script>
         let uploadedImage = null;
+        let userUUID = null;
+        let db;
+
+        function openDatabase() {
+            return new Promise((resolve, reject) => {
+                const dbRequest = indexedDB.open("PredictionHistoryDB", 1);
+
+                dbRequest.onsuccess = function(event) {
+                    db = event.target.result;
+                    resolve(db);
+                };
+
+                dbRequest.onerror = function(event) {
+                    reject("Error Membuka Database: " + event.target.error);
+                };
+
+                dbRequest.onupgradeneeded = function(event) {
+                    const db = event.target.result;
+                    const objectStore = db.createObjectStore("history", { keyPath: "id", autoIncrement: true });
+                    objectStore.createIndex("myuuid", "myuuid", { unique: false });
+                };
+            });
+        }
+
+
+        function getorCreateUUID() {
+            if (!localStorage.getItem('userUUID')) {
+                const myuuid = uuid.v4();
+                localStorage.setItem('userUUID', myuuid);
+            }
+            return localStorage.getItem('userUUID');
+        }
+
+        userUUID = getorCreateUUID();
+
+        // inisiasi database
+        openDatabase()
+            .then(db => {
+                console.log("Database Tersedia");
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        function savePredictionToIndexedDB(predictedClass, variance, probabilities) {
+            if (!db) {
+                console.error("Database belum ada...");
+                return;
+            }
+
+            const transaction = db.transaction("history", "readwrite");
+            const objectStore = transaction.objectStore("history");
+
+            const prediction = {
+                myuuid: userUUID,
+                predicted_class: predictedClass,
+                variance: variance.toFixed(2),
+                probabilities: (probabilities * 100).toFixed(2) + "%",
+                timestamp: new Date().toLocaleString()
+            };
+
+            const request = objectStore.add(prediction);
+
+            request.onsuccess = function () {
+                console.log("Hasil Prediksi Sudah Tersimpan:", prediction);
+            };
+
+            request.onerror = function (event) {
+                console.error("Error Menyimpan Hasil Prediksi:", event.target.error);
+            };
+        }
 
         function previewImage() {
             const fileInput = document.getElementById('imageFile');
@@ -78,7 +150,7 @@
                     const maxProbability = Math.max(...data.probabilities);
                     const variance = data.variance;
 
-                    const percentage = (maxProbability * 100).toFixed(2); // Hitung persentase
+                    const percentage = (maxProbability * 100).toFixed(2);
 
                     let feedbackText = "";
                     let feedbackClass = "";
@@ -109,6 +181,7 @@
                         <p class="feedback ${feedbackClass}">${icon} ${feedbackText}</p>
                     `;
 
+                    savePredictionToIndexedDB(predictedClass, variance, maxProbability);
                     updateProgress(percentage);
                 })
                 .catch(error => {
@@ -120,7 +193,7 @@
         function updateProgress(value) {
             const circle = document.querySelector(".circle-progress");
 
-            const percentage = Math.min(Math.max(value, 0), 100); // Pastikan persentase valid (0-100)
+            const percentage = Math.min(Math.max(value, 0), 100);
 
             circle.style.background = `conic-gradient(
                 red 0%,

@@ -21,7 +21,7 @@
         <h2>Prediction History</h2>
         </div>
 
-        <div class="prediction-table">
+        <div id="historyContainer" class="prediction-table">
         <table border = "1">
             <thead>
                 <tr>
@@ -31,26 +31,13 @@
                     <th>Probabilitas</th>
                 </tr>
             </thead>
-            <tbody>
-                {% if history %}
-                    {% for entry in history %}
-                    <tr>
-                        <td>{{ entry.timestamp }}</td>
-                        <td>{{ entry.predicted_class }}</td>
-                        <td>{{ entry.variance }}</td>
-                        <td>{{ entry.probabilities }}</td>
-                    </tr>
-                    {% endfor %}
-                {% else %}
-                    <tr>
-                        <td colspan="5">Belum ada hasil prediksi...</td>
-                    </tr>
-                {% endif %}
+            <tbody id="history-table-body">
+                <tr>
+                    <td colspan="4">Memuat data sebelumnya...</td>
+                </tr>
             </tbody>
         </table>
-        {% if hidden_count > 0 %}
-        <p>Ada {{ hidden_count }} hasil yang disembunyikan...</p>
-        {% endif %}
+        <p id="hidden-count"></p>
         </div>
         
 
@@ -60,6 +47,113 @@
             <button>Feedback</button>
         </div>
     </div>
+
+    <script>
+        let userUUID = localStorage.getItem("userUUID");
+        console.log("Current User UUID:", userUUID);
+        let db;
+
+        function openDatabase() {
+            return new Promise((resolve, reject) => {
+                const dbRequest = indexedDB.open("PredictionHistoryDB", 1);
+
+                dbRequest.onsuccess = function(event) {
+                    db = event.target.result;
+                    resolve(db);
+                };
+
+                dbRequest.onerror = function(event) {
+                    reject("Error Membuka Database: " + event.target.error);
+                };
+
+                dbRequest.onupgradeneeded = function(event) {
+                    const db = event.target.result;
+                    const objectStore = db.createObjectStore("history", { keyPath: "id", autoIncrement: true });
+                    objectStore.createIndex("myuuid", "myuuid", { unique: false });
+                };
+            });
+        }
+
+
+        if (userUUID) {
+            openDatabase()
+                .then(db => {
+                    console.log("Berhasil Membuka Database", db);
+                    fetchHistoryFromIndexedDB(db);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        } else {
+            console.log("Belum ada data pada device ini....");
+            document.getElementById("historyContainer").innerHTML = '<tr><td colspan="4">Gunakan Fitur Upload Photo/File Lalu Hasil akan Tampil Disini</td></tr>';
+        }
+
+        function displayHistory(history) {
+            const tableBody = document.getElementById("history-table-body");
+            const hiddenCountElement = document.getElementById("hidden-count");
+
+            if (history.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="4">Belum ada hasil prediksi...</td></tr>`;
+                hiddenCountElement.style.display = "none";
+            } else {
+                history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                tableBody.innerHTML = "";
+                let hiddenCount = 0;
+
+                history.slice(0, 3).forEach((entry) => {
+                    const row = document.createElement("tr");
+                    const timestampCell = document.createElement("td");
+                    const predictedClassCell = document.createElement("td");
+                    const varianceCell = document.createElement("td");
+                    const probabilitiesCell = document.createElement("td");
+
+                    timestampCell.textContent = entry.timestamp;
+                    predictedClassCell.textContent = entry.predicted_class;
+                    varianceCell.textContent = entry.variance;
+                    probabilitiesCell.textContent = entry.probabilities;
+
+                    row.appendChild(timestampCell);
+                    row.appendChild(predictedClassCell);
+                    row.appendChild(varianceCell);
+                    row.appendChild(probabilitiesCell);
+
+                    tableBody.appendChild(row);
+                });
+
+                if (history.length > 3) {
+                    hiddenCount = history.length - 3;
+                    hiddenCountElement.textContent = `Ada ${hiddenCount} hasil yang disembunyikan...`;
+                    hiddenCountElement.style.display = "block";
+                } else {
+                    hiddenCountElement.style.display = "none";
+                }
+            }
+        }
+
+        function fetchHistoryFromIndexedDB(db) {
+            const transaction = db.transaction("history", "readonly");
+            const objectStore = transaction.objectStore("history");
+            const index = objectStore.index("myuuid");
+            const request = index.getAll(userUUID);
+
+            request.onsuccess = function(event) {
+                const history = event.target.result;
+
+                if (history.length === 0) {
+                    console.log("Belum ada hasil prediksi...");
+                    document.getElementById("history-table-body").innerHTML = `<tr><td colspan="4">Belum ada hasil prediksi...</td></tr>`;
+                } else {
+                    displayHistory(history);
+                }
+            };
+
+            request.onerror = function(event) {
+                console.error("Error Mengambil Data dari Database", event.target.error);
+            };
+        }
+    </script>
 
 </body>
 </html>

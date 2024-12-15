@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>History</title>
     <link rel="stylesheet" href="static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 </head>
 <body>
     <div class="container">
@@ -40,6 +42,9 @@
         <p id="hidden-count"></p>
         </div>
         
+        <div class="charts-container">
+            <canvas id="barChart" width="400" height="300"></canvas>
+        </div>
 
         <div class="footer">
             <button><a href="/history">History</a></button>
@@ -74,7 +79,6 @@
             });
         }
 
-
         if (userUUID) {
             openDatabase()
                 .then(db => {
@@ -87,6 +91,79 @@
         } else {
             console.log("Belum ada data pada device ini....");
             document.getElementById("historyContainer").innerHTML = '<tr><td colspan="4">Gunakan Fitur Upload Photo/File Lalu Hasil akan Tampil Disini</td></tr>';
+        }
+
+        function renderBarChart(labels, data) {
+            const ctx = document.getElementById('barChart').getContext('2d');
+
+            const formattedData = labels.map((label, index) => {
+                return {
+                    label: label,
+                    flatTire: data[0][index] || 0,
+                    fullTire: data[1][index] || 0,
+                    noTire: data[2][index] || 0
+                };
+            });
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Predicted Class Count',
+                        data: data, 
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(255, 206, 86, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 206, 86, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Predicted Classes'
+                            }
+                        },
+                        
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Jumlah'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function extractDataBarChart(history) {
+            const predictedClasses = history.map(item => item.predicted_class);
+            const classCounts = predictedClasses.reduce((acc, cls) => {
+                acc[cls] = (acc[cls] || 0) + 1;
+                return acc;
+            }, {});
+
+            const labels = Object.keys(classCounts);
+            const data = Object.values(classCounts);
+
+            renderBarChart(labels, data);
         }
 
         function displayHistory(history) {
@@ -146,6 +223,7 @@
                     document.getElementById("history-table-body").innerHTML = `<tr><td colspan="4">Belum ada hasil prediksi...</td></tr>`;
                 } else {
                     displayHistory(history);
+                    extractDataBarChart(history);
                 }
             };
 

@@ -67,17 +67,18 @@
             document.getElementById('details-prediction').innerText = outputPredictionClass(selectedPrediction.predicted_class);
             document.getElementById('details-image').src = selectedPrediction.image_url;
             console.log(selectedPrediction.image_url);
+            console.log(selectedPrediction.timestamp);
+            console.log(changeFormatDate(selectedPrediction.timestamp));
         }
 
         function changeFormatDate(timestamp) {
-            const nama_bulan = ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"];
-        const date = new Date(timestamp);
-        const hari = date.getDate();
-        const bulan = nama_bulan[date.getMonth()];
-        const tahun = date.getFullYear();
+            const nama_bulan = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            let date = new Date(timestamp);
+            let hari = date.getDate();
+            let bulan = nama_bulan[date.getMonth()];
+            let tahun = date.getFullYear();
 
-        return `${hari} ${bulan} ${tahun}`;
+            return `${hari} ${bulan} ${tahun}`;
         }
 
         function outputPredictionClass(prediction) {

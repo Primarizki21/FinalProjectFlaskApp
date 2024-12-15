@@ -81,6 +81,20 @@
                 console.error(error);
             });
 
+        function formatTimestamp(date) {
+            const options = {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            };
+
+            return date.toLocaleString('en-US', options);  // Use 'en-US' for consistent format
+        }
+
         function savePredictionToIndexedDB(predictedClass, variance, probabilities, imageURL) {
             if (!db) {
                 console.error("Database belum ada...");
@@ -95,7 +109,7 @@
                 predicted_class: predictedClass,
                 variance: variance.toFixed(2),
                 probabilities: (probabilities * 100).toFixed(2) + "%",
-                timestamp: new Date().toLocaleString(),
+                timestamp: formatTimestamp(new Date()),
                 image_url: imageURL
             };
 
@@ -127,7 +141,6 @@
             }
         }
 
-
         function startPrediction() {
             const resultContainer = document.getElementById("result");
 
@@ -141,7 +154,7 @@
             const formData = new FormData();
             formData.append("image", uploadedImage);
 
-            axios.post('http://127.0.0.1:5000/predict', formData)
+            axios.post('http://192.168.0.200:5000/predict', formData)
                 .then(response => {
                     const data = response.data;
                     const predictedClass = data.predicted_class;

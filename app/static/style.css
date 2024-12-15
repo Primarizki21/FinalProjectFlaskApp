@@ -41,7 +41,10 @@ html, body {
 }
 
 .upload-container {
-    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
 .upload-container a {
@@ -127,7 +130,7 @@ html, body {
 }
 
 /* Responsive Design */
-@media (max-width: 375px) {
+@media (max-width: 500px) {
     .header .upload-btn {
         font-size: 12px;
         padding: 6px 10px;
@@ -136,7 +139,7 @@ html, body {
     .images {
         flex-direction: row;
     }
-    
+
     .image-item img {
         width: 70px;
         height: 70px;
@@ -146,13 +149,17 @@ html, body {
         font-size: 12px;
         padding: 8px 10px;
     }
+    .imageContainer img {
+        width: 100%; /* Gambar akan memenuhi lebar layar */
+        height: auto;
+    }
 }
 
 /* Upload HTML */
 .square {
     width: 300px;
     height: 300px;
-    margin: 20px 0;
+    margin: 20px auto;
     background-color: #0078ff;
     display: flex;
     align-items: center;
@@ -319,6 +326,7 @@ th {
     font-size: 18px;
     margin: 0;
     font-weight: normal;
+    padding: 0 15px;
 }
 .prediction-text h1 {
     font-size: 36px;

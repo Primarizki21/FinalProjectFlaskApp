@@ -11,9 +11,6 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="location">
-                📍 Mulyorejo, Surabaya
-            </div>
             <div class="upload-container">
                 <button class="upload-btn"><a href="/upload">Upload Photo/File</a></button>
             </div>
@@ -96,15 +93,6 @@
         function renderBarChart(labels, data) {
             const ctx = document.getElementById('barChart').getContext('2d');
 
-            const formattedData = labels.map((label, index) => {
-                return {
-                    label: label,
-                    flatTire: data[0][index] || 0,
-                    fullTire: data[1][index] || 0,
-                    noTire: data[2][index] || 0
-                };
-            });
-
             new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -113,14 +101,14 @@
                         label: 'Predicted Class Count',
                         data: data, 
                         backgroundColor: [
-                            'rgba(75, 192, 192, 0.6)',
-                            'rgba(255, 99, 132, 0.6)',
-                            'rgba(255, 206, 86, 0.6)'
+                            'rgba(25, 167, 206, 0.7)',
+                            'rgba(20, 108, 148, 0.7)',
+                            'rgba(175, 211, 226, 0.7)'
                         ],
                         borderColor: [
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(255, 206, 86, 1)'
+                            'rgba(25, 167, 206, 1)',
+                            'rgba(20, 108, 148, 1)',
+                            'rgba(175, 211, 226, 1)'
                         ],
                         borderWidth: 1
                     }]
@@ -196,6 +184,10 @@
                     row.appendChild(varianceCell);
                     row.appendChild(probabilitiesCell);
 
+                    row.addEventListener("click", () => {
+                        localStorage.setItem("selectedPrediction", JSON.stringify(entry));
+                        window.location.href = "/feedback";
+                    })
                     tableBody.appendChild(row);
                 });
 

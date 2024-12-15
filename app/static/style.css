@@ -6,7 +6,6 @@ html, body {
     height: 100%;
     background-color: whitesmoke;
     text-align: center;
-    background-image: url('ban5.png'); /* Ganti 'gambar_ban.jpg' dengan nama file gambar Anda */
     background-size: cover;
     background-position: center;
 }
@@ -150,21 +149,20 @@ html, body {
 }
 
 /* Upload HTML */
-
 .square {
     width: 300px;
     height: 300px;
-    margin: 20px auto;
-    border: 2px solid white;
-    background-color: #f3f3f3;
+    margin: 20px 0;
+    background-color: #0078ff;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
 }
 .square img {
-    max-width: 100%;
-    max-height: 100%;
+    width: 95%;;
+    max-height: 95%;
+    
 }
 .result-container {
     display: grid;
@@ -258,4 +256,109 @@ th {
 
 .prediction-table {
     margin-top: 0;
+}
+
+.charts-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+/*Feedback HTML*/
+.metrics {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    margin: 20px 0;
+    padding-left: 10%;
+}
+
+.metrics::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: #0078ff;
+}
+.metrics div {
+    text-align: center;
+    background-color: #0078ff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin: 0;
+    position: relative;
+}
+.probability {
+    border-left: 2px solid white; 
+}
+.prediction, .metrics, .feedback-text, .note {
+    margin: 5px 0;
+}
+.date{
+    text-align: left;
+    margin-left: 15px;
+}
+.date p{
+    background-color:#0078ff;
+    border-radius: 5px;
+    padding: 5px 10px;
+    display: inline-block;
+    color: white;
+    font-size: 20px;
+}
+.prediction {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    max-width: 100%;
+}
+.prediction h2 {
+    font-size: 18px;
+    margin: 0;
+    font-weight: normal;
+}
+.prediction-text h1 {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 5px 0;
+}
+.prediction-text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.feedback-section {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 20px;
+    max-width: 100%;
+    padding: 0 15px;
+}
+.feedback-section h3 {
+    font-size: 18px;
+    margin: 0;
+    font-weight: bold;
+}
+.feedback-text {
+    font-size: 25px;
+    margin: 0;
+    text-align: left;
+}
+.feedback-text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.note {
+    text-align: left;
+    color: white;
+    padding: 0 15px;
+    background-color: #0078ff;
+    border-radius: 8px;
+}
+.note h4 {
+    font-weight: bold;
 }

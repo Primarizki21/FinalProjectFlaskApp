@@ -12,9 +12,6 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="location">
-                📍 Mulyorejo, Surabaya
-            </div>
         </div>
 
         <div class="square" id="imageContainer">
@@ -84,7 +81,7 @@
                 console.error(error);
             });
 
-        function savePredictionToIndexedDB(predictedClass, variance, probabilities) {
+        function savePredictionToIndexedDB(predictedClass, variance, probabilities, imageURL) {
             if (!db) {
                 console.error("Database belum ada...");
                 return;
@@ -98,7 +95,8 @@
                 predicted_class: predictedClass,
                 variance: variance.toFixed(2),
                 probabilities: (probabilities * 100).toFixed(2) + "%",
-                timestamp: new Date().toLocaleString()
+                timestamp: new Date().toLocaleString(),
+                image_url: imageURL
             };
 
             const request = objectStore.add(prediction);
@@ -149,7 +147,7 @@
                     const predictedClass = data.predicted_class;
                     const maxProbability = Math.max(...data.probabilities);
                     const variance = data.variance;
-
+                    const imageURL = data.image_url;
                     const percentage = (maxProbability * 100).toFixed(2);
 
                     let feedbackText = "";
@@ -181,7 +179,7 @@
                         <p class="feedback ${feedbackClass}">${icon} ${feedbackText}</p>
                     `;
 
-                    savePredictionToIndexedDB(predictedClass, variance, maxProbability);
+                    savePredictionToIndexedDB(predictedClass, variance, maxProbability, imageURL);
                     updateProgress(percentage);
                 })
                 .catch(error => {

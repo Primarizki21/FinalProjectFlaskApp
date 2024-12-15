@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flat Tire Prediction</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="date">
+            <p><span id="details-timestamp"></span></p>
+        </div> 
+
+        <div class="prediction">
+            <div class="prediction-text-container">
+                <h2>Prediction</h2>
+                <div class="prediction-text">
+                    <h1><span id="details-prediction"></span></h1>
+                </div>
+            </div>
+            <div class="square">
+                <img id="details-image" src="" alt="Foto Ban" style="max-width: 100%; height: auto;">
+            </div> 
+        </div>
+
+        <div class="metrics">
+            <div class="variance">
+                <h4>Variance</h4>
+                <p><span id="details-variance"></span></p>
+            </div>
+            <div class="probability">
+                <h4>Probability</h4>
+                <p><span id="details-probability"></span></p>
+            </div>
+        </div>
+        <div class="feedback-section">
+            <div class="feedback-text-container">
+                <h3>Feedback</h3>
+                <div class="feedback-text">
+                    <p><span id="details-feedback"></span></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="note">
+            <h4>Note</h4>
+            <p>
+                Variance: The value for image sharpness, the higher the value, the sharper/clearer the image.<br>
+                Probability: The probability of the model's confidence in the prediction result.
+            </p>
+        </div>
+
+        <div class="footer">
+            <button><a href="/history">History</a></button>
+            <button><a href="/">Home</a></button>
+            <button>Feedback</button>
+        </div>
+    </div>
+    <script>
+        const selectedPrediction = JSON.parse(localStorage.getItem("selectedPrediction"));
+
+        if (selectedPrediction) {
+            document.getElementById("details-variance").innerText = selectedPrediction.variance;
+            document.getElementById("details-probability").innerText = selectedPrediction.probabilities;
+            document.getElementById('details-timestamp').innerText = changeFormatDate(selectedPrediction.timestamp);
+            document.getElementById('details-prediction').innerText = outputPredictionClass(selectedPrediction.predicted_class);
+            document.getElementById('details-image').src = selectedPrediction.image_url;
+            console.log(selectedPrediction.image_url);
+        }
+
+        function changeFormatDate(timestamp) {
+            const nama_bulan = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
+        const date = new Date(timestamp);
+        const hari = date.getDate();
+        const bulan = nama_bulan[date.getMonth()];
+        const tahun = date.getFullYear();
+
+        return `${hari} ${bulan} ${tahun}`;
+        }
+
+        function outputPredictionClass(prediction) {
+            let feedbackPrediction = '';
+            let feedbackPrediction1 = '';
+
+            if (prediction == "full_tire") {
+                feedbackPrediction = "The Tire is Full"
+                feedbackPrediction1 = "Your tire is currently inflated and in good condition.<br>No further action needed."
+            } else if (prediction == "flat_tire") {
+                feedbackPrediction = "The Tire is Flat"
+                feedbackPrediction1 = "Your tire happens to be flat.<br>Please fill your tire at the nearest mechanic."
+            } else {
+                feedbackPrediction = "No Tire"
+                feedbackPrediction1 = "No tire detected in the image.<br>Please take another photo (no tire)"
+            }
+            document.getElementById("details-feedback").innerHTML = feedbackPrediction1;
+            return feedbackPrediction;
+        }
+    </script>
+</body>
+</html>

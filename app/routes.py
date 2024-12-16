@@ -68,11 +68,6 @@ def upload_to_gcs(file, bucket_name, destination_blob_name, service_account, mak
     blob.upload_from_file(file, content_type="image/jpeg")
     public_url = blob.generate_signed_url(expiration=expiration, version="v4")
     return public_url
-    # public_url = f"https://storage.googleapis.com/{bucket_name}/{destination_blob_name}"
-    # if make_public:
-    #     blob.make_public()
-
-    
 
 @app_routes.route('/predict', methods=['POST'])
 def predict():

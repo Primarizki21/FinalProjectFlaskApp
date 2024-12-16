@@ -137,3 +137,7 @@ def history():
 @app_routes.route('/feedback')
 def feedbacktouser():
     return render_template('feedbacktouser.html')
+
+@app_routes.route('/feedbacktous')
+def feedback():
+    return render_template('feedback.html')

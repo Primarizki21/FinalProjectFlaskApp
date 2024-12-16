@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>Feedback Form</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header"></div>
+
+        <h2 class="opini">We want your opinion!</h2>
+        <p>How satisfied are you with our help?</p>
+
+        <form id="feedback-form" action="https://formspree.io/f/xgvejokw" method="POST">
+            <div class="emojis">
+                <span class="emoji" data-value="😡">😡</span>
+                <span class="emoji" data-value="😞">😞</span>
+                <span class="emoji" data-value="😐">😐</span>
+                <span class="emoji" data-value="🙂">🙂</span>
+                <span class="emoji" data-value="😊">😊</span>
+            </div>
+            <input type="hidden" name="emoji" id="emoji-input" value="">
+
+            <div class="textarea-feedback">
+                <textarea name="message" id="feedback-text" placeholder="Your feedback..." required></textarea>
+            </div>
+
+            <button type="submit" id="send-feedback">Send Feedback</button>
+        </form>
+
+        <div class="footer">
+            <button><a href="/history">History</a></button>
+            <button><a href="/">Home</a></button>
+            <button><a href="/feedbacktous">Feedback</a></button>
+        </div>
+    </div>
+
+    <script>
+        const emojis = document.querySelectorAll('.emoji');
+        const emojiInput = document.getElementById('emoji-input');
+
+        emojis.forEach(emoji => {
+            emoji.addEventListener('click', () => {
+                emojis.forEach(e => e.classList.remove('active'));
+                
+                emoji.classList.add('active');
+                
+                emojiInput.value = emoji.dataset.value;
+            });
+        });
+    </script>
+</body>
+</html>

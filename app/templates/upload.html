@@ -154,7 +154,7 @@
             const formData = new FormData();
             formData.append("image", uploadedImage);
 
-            axios.post('http://192.168.0.200:5000/predict', formData)
+            axios.post('http://34.59.227.138:5000/predict', formData)
                 .then(response => {
                     const data = response.data;
                     const predictedClass = data.predicted_class;
@@ -197,6 +197,8 @@
                 })
                 .catch(error => {
                     console.error("Error:", error);
+                    console.error('Error:', error.response ? error.response.data : error.message);
+                    console.error("Error message:", error.message);
                     resultContainer.innerHTML = "<p><strong>Error dalam memproses file gambar, pastikan formatnya benar (jpg/png/jpeg).</strong></p>";
                 });
         }

@@ -19,6 +19,3 @@ Thumbs.db
 # Ignore large files (manually add if you don’t want to commit a specific model)
 app/static/vit_trained_wheel.pth
 static/vit_trained_wheel.pth
-
-# Ignore .json files in the static folder
-app/static/*.json
